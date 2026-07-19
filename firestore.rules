@@ -1,0 +1,26 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Função auxiliar: verifica se o usuário logado é admin
+    function isAdmin() {
+      return request.auth != null && 
+        get(/databases/$(database)/documents/dados/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Coleção "dados": cada documento é o perfil de um usuário (keyed by UID)
+    match /dados/{userId} {
+      // O próprio dono pode ler/escrever seus dados
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Admin pode ler e atualizar dados de qualquer usuário (para o painel de administração)
+      allow read, update: if isAdmin();
+      
+      // Subcoleções dentro do UID (transactions, goals, bills, creditCards)
+      match /{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+  }
+}

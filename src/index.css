@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-background: #041424;
+  --color-surface: #041424;
+  --color-surface-container-lowest: #010f1e;
+  --color-surface-container-low: #0d1d2c;
+  --color-surface-container: #112131;
+  --color-surface-container-high: #1c2b3b;
+  --color-surface-container-highest: #273647;
+  
+  --color-on-background: #d4e4fa;
+  --color-on-surface: #d4e4fa;
+  --color-on-surface-variant: #bbcabc;
+  
+  --color-primary: #48e089;
+  --color-on-primary: #00391c;
+  --color-primary-container: #14c16e;
+  --color-on-primary-container: #004825;
+  --color-primary-fixed: #69fea3;
+  
+  --color-secondary: #84cfff;
+  --color-on-secondary: #00344c;
+  --color-secondary-container: #3799cd;
+  --color-secondary-fixed: #c7e7ff;
+  
+  --color-tertiary: #96ccff;
+  --color-on-tertiary: #003353;
+  --color-tertiary-container: #69aeea;
+  --color-tertiary-fixed: #cee5ff;
+  
+  --color-error: #ffb4ab;
+  --color-on-error: #690005;
+  --color-error-container: #93000a;
+  
+  --color-outline: #869487;
+  --color-outline-variant: #3c4a3f;
+
+  --color-pix-bg: #00391c;
+  --color-pix-text: #69fea3;
+  --color-credit-bg: #00344c;
+  --color-credit-text: #84cfff;
+  --color-debit-bg: #4a2d00;
+  --color-debit-text: #ffb84a;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-on-background);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(17, 33, 49, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Hide scrollbar for cleaner look in sidebars etc */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Hide number input spinners */
+.custom-hide-spinner::-webkit-outer-spin-button,
+.custom-hide-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.custom-hide-spinner {
+  -moz-appearance: textfield;
+}
