@@ -11,6 +11,7 @@ export default function AddExpense() {
   const [description, setDescription] = useState('');
   const [value, setValue] = useState('');
   const [category, setCategory] = useState<Category | ''>('');
+  const [customCategory, setCustomCategory] = useState('');
   const [date, setDate] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | ''>('');
   const [creditCardId, setCreditCardId] = useState('');
@@ -22,14 +23,15 @@ export default function AddExpense() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!description || !value || !category || !date || !paymentMethod) return;
+    const finalCategory = category === 'outros' ? customCategory : category;
+    if (!description || !value || !finalCategory || !date || !paymentMethod) return;
     if (paymentMethod === 'credito' && !creditCardId && creditCards.length > 0) return;
 
     addTransaction({
       description,
       amount: parseFloat(value),
       type: 'expense',
-      category,
+      category: finalCategory as Category,
       paymentMethod,
       date: new Date(date).toISOString(),
       creditCardId: paymentMethod === 'credito' ? creditCardId : undefined
@@ -101,9 +103,21 @@ export default function AddExpense() {
                     <option value="lazer">Lazer</option>
                     <option value="mercado">Mercado</option>
                     <option value="compras">Compras</option>
+                    <option value="estudos">Estudos</option>
+                    <option value="outros">Outros</option>
                   </select>
                   <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant pointer-events-none" />
                 </div>
+                {category === 'outros' && (
+                  <input
+                    type="text"
+                    required
+                    placeholder="Digite a categoria (ex: Fatura)"
+                    value={customCategory}
+                    onChange={(e) => setCustomCategory(e.target.value)}
+                    className="w-full mt-2 bg-surface border border-outline-variant rounded-lg px-4 py-3 text-base text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none animate-fade-in"
+                  />
+                )}
               </div>
 
               {/* Date */}

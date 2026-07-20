@@ -10,7 +10,9 @@ export type Category =
   | 'investimento' 
   | 'outros'
   | 'groceries'
-  | 'dining';
+  | 'dining'
+  | 'estudos'
+  | (string & {});
 
 export interface Transaction {
   id: string;

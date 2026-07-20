@@ -12,6 +12,8 @@ export default function Dashboard() {
   const balance = getBalance();
   const income = getTotalIncome();
   const expense = getTotalExpense();
+  
+  const expensePercentage = income > 0 ? Math.round((expense / income) * 100) : 0;
 
   // Business Logic: Count bills due in the next 5 days
   const urgentBillsCount = useMemo(() => {
@@ -28,18 +30,26 @@ export default function Dashboard() {
   // For the pie chart, aggregate expenses by category
   const expensesByCategory = useMemo(() => {
     const expenses = transactions.filter(t => t.type === 'expense');
+    const totalExpenses = expenses.reduce((sum, curr) => sum + curr.amount, 0);
+    
     const grouped = expenses.reduce((acc, curr) => {
       acc[curr.category] = (acc[curr.category] || 0) + curr.amount;
       return acc;
     }, {} as Record<string, number>);
     
-    // Map to specific categories for the chart matching screenshot
-    // Moradia (Primary), Alimentação (Tertiary Container), Lazer (Secondary)
-    return [
-      { name: 'Moradia', value: 40, color: '#48e089' },
-      { name: 'Alimentação', value: 25, color: '#69aeea' },
-      { name: 'Lazer', value: 15, color: '#84cfff' },
-    ];
+    const colors = ['#48e089', '#69aeea', '#84cfff', '#ffd166', '#ef476f', '#118ab2', '#073b4c', '#9d4edd'];
+    
+    const entries = Object.entries(grouped) as [string, number][];
+    
+    return entries.map(([name, val], index) => {
+       const displayName = name.charAt(0).toUpperCase() + name.slice(1);
+       return {
+         name: displayName,
+         value: val,
+         percentage: totalExpenses > 0 ? Math.round((val / totalExpenses) * 100) : 0,
+         color: colors[index % colors.length]
+       };
+    }).sort((a, b) => b.value - a.value);
   }, [transactions]);
 
   const recentTransactions = transactions.slice(0, 4);
@@ -180,7 +190,7 @@ export default function Dashboard() {
             {/* Center Metric */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mt-2">
               <span className="text-xs font-medium text-on-surface-variant">Comprometido</span>
-              <span className="text-2xl font-bold text-primary drop-shadow-[0_0_8px_rgba(72,224,137,0.5)] leading-tight">80%</span>
+              <span className="text-2xl font-bold text-primary drop-shadow-[0_0_8px_rgba(72,224,137,0.5)] leading-tight">{expensePercentage}%</span>
             </div>
           </div>
 
@@ -192,7 +202,7 @@ export default function Dashboard() {
                    <span className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color, boxShadow: `0 0 8px ${item.color}80` }} />
                    <span className="text-on-surface">{item.name}</span>
                  </div>
-                 <span className="font-medium text-on-surface">{item.value}%</span>
+                 <span className="font-medium text-on-surface">{item.percentage}%</span>
                </div>
             ))}
           </div>
